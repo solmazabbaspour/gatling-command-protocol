@@ -3,7 +3,7 @@
 
 ![Status](https://github.com/solmazabbaspour/gatling-command-protocol/workflows/CI/badge.svg)
 
-**Gatling version** 2.2.5
+**Gatling version** 3.3.0
 
 
 ## Usage
