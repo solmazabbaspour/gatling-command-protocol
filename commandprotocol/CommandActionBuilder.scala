@@ -11,6 +11,8 @@ import io.gatling.core.util.NameGen
 import io.gatling.core.session.Expression
 import io.gatling.commons.validation.Validation
 import io.gatling.core.session.Session
+import io.gatling.commons.util.Clock
+import io.gatling.commons.util.DefaultClock
 
 class CommandRunActionBuilder(requestName: String) extends ActionBuilder {
 
@@ -21,30 +23,31 @@ class CommandRunActionBuilder(requestName: String) extends ActionBuilder {
 			import ctx._
 			val statsEngine = coreComponents.statsEngine
 			val commandComponents = components(protocolComponentsRegistry)
+			val clock = new DefaultClock
 
-			new CommandRun(commandComponents.commandProtocol, statsEngine, next, requestName)
+			new CommandRun(commandComponents.commandProtocol, statsEngine, next, requestName, clock )
 		}
 	}
 
-class CommandRun(protocol: CommandProtocol, val statsEngine: StatsEngine, val next: Action, val requestName: String) extends ExitableAction with NameGen {
-	override def name: String = requestName
+	class CommandRun(protocol: CommandProtocol, val statsEngine: StatsEngine, val next: Action, val requestName: String, val clock: Clock) extends ExitableAction with NameGen {
+		override def name: String = requestName
 
-	override def execute(session: Session) = {
-		val k = new CommandService()
-		val start = System.currentTimeMillis
+		override def execute(session: Session) = {
+			val k = new CommandService()
+			val start = System.currentTimeMillis
 
-		val path = session("path").as[String]
-		val command = session("command").as[String]
-		if(path == ""){
-			k.run(command)
+			val path = session("path").as[String]
+			val command = session("command").as[String]
+			if(path == ""){
+				k.run(command)
+			}
+			else{
+				k.run(command,path)
+			}
+
+			val end = System.currentTimeMillis
+			val timings = ResponseTimings(start, end)
+			statsEngine.logResponse(session, name, start, end, OK, None, None)
+			next ! session
 		}
-		else{
-			k.run(command,path)
-		}
-
-		val end = System.currentTimeMillis
-		val timings = ResponseTimings(start, end)
-		statsEngine.logResponse(session, name, timings, OK, None, None)
-		next ! session
 	}
-}
