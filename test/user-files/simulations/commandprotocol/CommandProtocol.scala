@@ -1,36 +1,25 @@
 package commandprotocol
 
-import akka.actor.ActorSystem
-import io.gatling.core
+import io.gatling.commons.model.Credentials
 import io.gatling.core.CoreComponents
 import io.gatling.core.config.GatlingConfiguration
-import io.gatling.core.protocol.{Protocol, ProtocolComponents, ProtocolKey}
-import io.gatling.commons.validation.Validation
-import io.gatling.core.session.Session
+import io.gatling.core.protocol.{ Protocol, ProtocolKey }
 
-class CommandProtocol() extends Protocol {
-	type Components = CommandComponents
-}
+
 
 object CommandProtocol {
-	def apply() = new CommandProtocol()
-
-	val CommandProtocolKey = new ProtocolKey {
-
-		type Protocol = CommandProtocol
-		type Components = CommandComponents
-
-		override def protocolClass: Class[core.protocol.Protocol] = classOf[CommandProtocol].asInstanceOf[Class[io.gatling.core.protocol.Protocol]]
-		override def defaultProtocolValue(configuration: GatlingConfiguration): CommandProtocol = throw new IllegalStateException("Can't provide a default value for CommandProtocol")
-		override def newComponents(system: ActorSystem, coreComponents: CoreComponents): CommandProtocol => CommandComponents = {
-			commandProtocol => CommandComponents(commandProtocol)
-		}
-	}
+		val CommandProtocolKey: ProtocolKey[CommandProtocol, CommandComponents] = new ProtocolKey[CommandProtocol, CommandComponents] {
+     def protocolClass: Class[io.gatling.core.protocol.Protocol] = classOf[CommandProtocol].asInstanceOf[Class[io.gatling.core.protocol.Protocol]]
+     def defaultProtocolValue(configuration: GatlingConfiguration): CommandProtocol = throw new IllegalStateException("Can't provide a default value for CommandProtocol")
+     def newComponents(coreComponents: CoreComponents): CommandProtocol => CommandComponents = {
+       commandProtocol => CommandComponents(commandProtocol)
+     }
+   }
 }
 
-case class CommandComponents(commandProtocol: CommandProtocol) extends ProtocolComponents {
-	def onStart: Option[Session => Session] = None
-	def onExit: Option[Session => Unit] = None
+
+case class CommandProtocol() extends Protocol {
+	type Components = CommandComponents
 }
 
 case class CommandProtocolBuilder() {
