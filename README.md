@@ -1,6 +1,9 @@
+# Gatling Command Protocol
 [Gatling](https://github.com/gatling/gatling) protocol that allows running load test using commandline commands.
 
-**Gatling version:** 2.2.5
+![Status](https://github.com/solmazabbaspour/gatling-command-protocol/workflows/CI/badge.svg)
+
+**Gatling version** 2.2.5
 
 
 ## Usage
