@@ -18,4 +18,4 @@ jobs:
       - name: Run the gatling test
         run: |
           echo running gatling
-          ./test/bin/gatling.sh -s commandTest.TestSimulation
+          ./test/bin/run-test.sh
