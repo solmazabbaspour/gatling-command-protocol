@@ -43,10 +43,10 @@ val scn = scenario("CommandSimulation")
   ````
 
 ## Test
-A simple test has been created to showcase the usage of this protocol. This scenario will create a directory under `/tmp/commandtest` and then will remove it in the next command. Under [test/bin](test/bin) Run `./gatling.sh -s commandTest.TestSimulation`
+A simple test has been created to showcase the usage of this protocol. This scenario will create a directory under `/tmp/commandtest` and then will remove it in the next command. Under [test/bin](test/bin) Run `./run-test.sh -s commandTest.TestSimulation`
 
 
 ### Gatling Report
 ![Gatling report](https://user-images.githubusercontent.com/5240896/71823028-a3d38f00-3096-11ea-8b37-8ae60032b13e.png)
 
-Please note that this version marks all responses as `OK`.
+Commands that return a non zero code will be marked as KO.
