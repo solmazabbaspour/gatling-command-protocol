@@ -8,7 +8,7 @@ import commandprotocol.Predef._
 class TestSimulation extends Simulation {
 	val commandProtocol = command
 	.set()
-	
+
 	val scn = scenario("CommandSimulation")
 		.exec((session: Session) => {
 			session.set("path", "")

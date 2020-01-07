@@ -1,6 +1,6 @@
 package commandprotocol
 
-import io.gatling.commons.stats.OK
+import io.gatling.commons.stats.{ KO, OK, Status }
 import io.gatling.core.action.builder.ActionBuilder
 import io.gatling.core.action.{Action, ExitableAction}
 import io.gatling.core.protocol.ProtocolComponentsRegistry
@@ -34,20 +34,27 @@ class CommandRunActionBuilder(requestName: String) extends ActionBuilder {
 
 		override def execute(session: Session) = {
 			val k = new CommandService()
-			val start = System.currentTimeMillis
+			val start = clock.nowMillis
+			var message = 0
 
 			val path = session("path").as[String]
-			val command = session("command").as[String]
+			var command = session("command").as[String]
+
+			println("Running command: "  + command )
 			if(path == ""){
-				k.run(command)
+				message = k.run(command)
 			}
 			else{
-				k.run(command,path)
+			 message = k.run(command,path)
 			}
+			val end = clock.nowMillis
 
-			val end = System.currentTimeMillis
-			val timings = ResponseTimings(start, end)
-			statsEngine.logResponse(session, name, start, end, OK, None, None)
+			if (message != 0) {
+				statsEngine.logResponse(session, requestName, start, end, KO, None, None)
+			}
+			else{
+				statsEngine.logResponse(session, requestName, start, end, OK, None, None)
+			}
 			next ! session
 		}
 	}
